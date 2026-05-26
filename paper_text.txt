@@ -1,0 +1,621 @@
+--- PAGE 1 ---
+Machine learning-assisted structural parameters screening of Sb@C 
+composites for high cycle capacity in sodium-ion battery
+Yufei Wang , Haixin Zhou , Kuo Wang , Xin Liu , Youming Peng , Xueping Wu , LingJiao Chen ,  
+Jiaojiao Liang
+*
+, Di Huang
+*
+College of Railway Transportation, Hunan University of Technology, Zhuzhou 412008, China
+ARTICLE INFO
+Keywords:
+Sodium-ion batteries
+Machine learning
+Sb@C electrode
+Structural parameter
+High cycle capacity
+ABSTRACT
+Antimony@carbon (Sb@C) with high capacity and low reaction potential have been the focus of research on 
+sodium storage electrodes. However, it is challenging to obtain the precisely correlation of electrode structure 
+parameters on battery capacity in experimental research. Machine learning (ML) is a kind of artificial intelligence 
+and can predict the quantitative relationship between material structural and cycle capacity of electrodes by 
+building models. Hence, in this work the 6 key structural characteristics parameter of Sb@C electrode are 
+investigated for sodium-ion batteries with cycle performance by 4 kinds of algorithms based on ML, and Ada -
+boost algorithm embody the best performance with R
+2 
+values of 0.91 and 0.83 on the test set and training set 
+with 10-fold cross-validation, respectively. Furthermore, it is obtained the antimony content (AC) of Sb@C 
+composite is the most critical of structural parameters affect the remaining capacity of cycle performance 
+through feature screening and SHAP analysis, due to the sodium storage mechanism that the cycle capacity of 
+Sb@C electrode are directly affected the high capacity of Sb. Meanwhile, it is accurately predicted the 0.65 – 0.75 
+of AC at smaller-size of antimony size (AS) and higher or lower of the intensity ratio for Raman peak (RP) with 
+Sb@C electrode is obtained the high cycle capacity with exhaustion method. It corresponds that the stabilized 
+structure of the carbon material effectively buffers the volume expansion caused by the addition of appropriate 
+AC to reduce the capacity fading. And the higher or lower of RP value improves the electrical conductivity of the 
+carbon and facilitates the electron transport. More importantly, the small-sized AS provide more active sites, 
+which contribute to the storage and electrochemical reaction activity of sodium ions, thus further enhancing the 
+cycle remaining capacity. In addition, the strong generalization ability of built model is validated by other series 
+of metal@carbon composites within less 15 % of loss rate. The effective method and new direction with ML- 
+screening are obtained to explore the structural parameter of electrode to predict battery cycle capacity for 
+providing a comprehensive effective solution.
+1. Introduction
+Sodium-ion batteries (SIBs) have attracted a lot of attention because 
+of low price and abundant sodium resources, which are expected to be 
+used in low-speed electric cars, energy storage systems and portable 
+electronics. As we all know, it is of great research significance for the 
+rational structure of electrode materials with high capacity to improve 
+the cycle performance of SIBs [1 – 3] .
+Antimony (Sb) has been widely studied as hot spot electrode mate -
+rials in SIBs due to the high theoretical capacity of 660 mAh/g and good 
+electrical conductivity. However, the larger volume expansion and 
+contraction of Sb lead to electrode pulverization and structural collapse 
+in the charge-discharge process, thus affecting the cycle performance 
+and specific capacity in SIBs [4,5] . Nanosizing Sb can better alleviate the 
+stress concentration caused by the volume change to reduce the rupture 
+and pulverization of electrode. Alternatively, Sb nanomaterials are 
+composited with carbon to form Sb@C, in which the carbon material can 
+provide the better electrical conductivity while acting as a buffer against 
+volume expansion [6] . Many researchers have carried out different 
+structural regulations of Sb@C composites to improve the sodium stor -
+age properties. For example, Huang et al., reported 70 wt% Sb in Sb@C 
+by solvent method to form composites for SIBs, and the reversible ca -
+pacity of 495.2 mAh/g after 100 cycles at a current density of 
+125 mAh/g [7] . Subsequently, Nguyen et al. investigated Sb@C 
+* Corresponding authors.
+E-mail addresses: liangjiaojiao@hut.edu.cn (J. Liang), dihuang@hut.edu.cn (D. Huang). 
+Contents lists available at ScienceDirect
+Journal of Alloys and Compounds
+journal homepage: www.else vier.com/loc ate/jalcom
+https://doi.org/10.1016/j.jallcom.2025.179424
+Received 11 November 2024; Received in revised form 16 February 2025; Accepted 22 February 2025  
+Journal of Alloys and Compounds 1020 (2025) 179424 
+Available online 24 February 2025 
+0925-8388/© 2025 Elsevier B.V. All rights are reserved, including those for text and data mining, AI training, and similar technologies. 
+--- PAGE 2 ---
+composites with Sb content of 79.19 wt%, 68.43 wt% and 62.70 wt% 
+with corresponding reversible capacities of 571.2, 622.5 and 
+621.0 mAh/g after 100 cycles, respectively [8] . In addition, Liu et al. 
+prepared porous Sb@C nanotube composites obtained the degree of 
+crystallinity of 2.90, 2.23, and 3.21, respectively, which exhibited 
+reversible capacities of 290, 462, and 382 mAh/g after 100 cycles at a 
+current of 100 mA/g [9] . Luo et al. discussed the Sb@C composites in 
+which Raman peak intensity ratios of 3.12, 2.68 and 2.12 corresponded 
+to reversible capacities of 587.4, 467.1 and 531.1 mAh/g after 100 cy -
+cles, respectively [10] . All show that the Sb content, degree of 
+Fig. 1. The ML workflow for screening structural parameters of Sb@C electrode with high cycle remaining capacity for SIBs.
+Fig. 2. The comparison between predicted values and experimental values of remaining capacity for Sb@C composite in SIBs (a) Adaboost model, (b) RF model, (c) 
+XGBoost model (d) SVR model (In the figure, blue points represent the training set, red points represent the test set, and the red line represents the reference line 
+where the predicted value is equal to the experimental value).
+Y. Wang et al.                                                                                                                                                                                                                                   Journal of Alloys and Compounds 1020 (2025) 179424 
+2 
+--- PAGE 3 ---
+crystallinity and other structural parameters of Sb@C electrodes have 
+the great influence on the cycle capacity of SIBs. However, the experi -
+mental research conclusions of a single variable cannot precise and 
+comprehensive reflect the relationship between the structural parame -
+ters of Sb@C and the cycle capacity in SIBs.
+Machine Learning (ML) is the core technology of artificial intelli -
+gence research, which is now gradually and widely used in the research 
+design of electrode [11] . For example, Liu et al. used ML establish a 
+suitable model to efficiently screen the effect of microstructural pa -
+rameters of non-graphitic carbon materials based on sodium storage 
+mechanism and performance through Web of Science databases [12] . As 
+well as Isaiah A. et al. trained the ML models to predict the average 
+voltage and volume changes of metal-ion battery electrode materials 
+during charging and discharging based on the materials project database
+[13] . Subsequently, they successfully developed a tool and proposed 
+nearly 5000 candidate electrode materials. Moreover, our group has 
+predicted novel photoelectric materials to enhance power conversion 
+efficiency by ML [14,15] . All above works show that ML is a highly 
+efficient and adaptable method for designing and screening the struc -
+tural of materials, providing an important way for the performance 
+prediction.
+Here, the structure parameters of Sb@C materials have been 
+explored with ML to establish between structural parameters and cycle 
+performance for SIBs with high remaining capacity in this work. The ML 
+workflow for screening the structural parameters of Sb@C electrode 
+with high cycle remaining capacity by ML for sodium-ion batteries as 
+shown in Fig. 1 . Firstly, 90 data points of original experimental research 
+as displayed in Table S5 about the sodium storage of Sb@C composites 
+with six key structural feature as inputs and cycle capacity as output 
+were collected and extracted from the Web of Science in recent years. 
+Then, the model was trained to predict cycle remaining capacity after 
+normalization using ML such as Random Forest (RF), eXtreme Gradient 
+Boosting(XGBoost), Adaptive Boosting (Adaboost) and Support Vector 
+Regression (SVR). The Adaboost model exhibited the highest prediction 
+accuracy with analysis by ML performance metrics. Meanwhile, the 
+explainable analysis was also carried out by elucidating the effectiveness 
+of the model through Shapley values, and the adoption of exhaustive 
+method with constructing artificial data of the built model was applied 
+to predict relatively precise range of structural characteristics, including 
+AC, RP and AS, for the high cycle remaining capacity. Finally, the 
+experimental data of sodium storage with other metal@carbon com -
+posite, liking Ge@C, Sn@C, Bi@C and Fe@C composites, were used to 
+validate the generalization of the model.
+2. Results and discussion
+ML algorithms including Adaboost, SVR, XGBoost and RF were used 
+to construct the training and testing models to establish and evaluate the 
+mapping relationship between structural characteristics and cycle per -
+formance with high capacity in Sb@C composites,and the structural 
+parameters as the input features and the remaining capacity of 100 cy -
+cles as the output feature were shown in Table S1 , and the training re -
+sults of the models were displayed in Fig. S1 without IC as the input 
+features. Although Adaboost had better result compared with other 
+models algorithms, the test set R² was 0.57 and the mean square error 
+MSE was 54.2, which was relatively low. Because the R² value was used 
+to evaluate and quantify the goodness of fit of the ML model and the 
+relationship between the independent and dependent variables, and it 
+was an important indicator in regression analysis [16] , if the closer the 
+R² value is to 1 with the higher the prediction accuracy of cycle 
+remaining capacity. To improve the accuracy of the prediction model, 
+the initial capacity (IC) was taken into account containing other factors, 
+such as electrolyte type, synthesis method and other structure of mate -
+rial, etc. to affect remaining capacity of cycle performance and intro -
+duced as an input feature using the method of CEP.
+The training and testing results of the ML algorithm using 10-fold 
+cross-validation after adding IC were shown in Fig. 2 and Table 1 .The 
+R² values of the test sets and training sets for AdaBoost, RF, XGboost and 
+SVR were 0.83 and 0.91, 0.76 and 0.86, 0.77 and 0.87, 0.77 and 0.87, 
+respectively. And the introduction of the initial capacity can contribute 
+to improve the predicted performance evaluation metrics of all models 
+which were greatly better optimized. At the same time, this also in -
+dicates the significant enhancement in the predictive capacity of the 
+AdaBoost algorithm models for cycle remaining capacity. What ’ s more, 
+the RMSE (43.5) and MAE (37.1) values of the test sets for Adaboost 
+models were lower than those of RF (RMSE was 51.8, MAE was 44.1), 
+XGboost (RMSE was 50.9, MAE was 43.2) and SVR (RMSE was 44.3, 
+MAE was 38.3). This may be because RF, XGBoost, and SVR were prone 
+to overfitting on small data sets or have difficulty capturing features 
+effectively. The AdaBoost algorithm was simple and computationally 
+efficient, and can adapt to data patterns in small datasets more quickly
+[17] . In addition, although both AdaBoost and XGBoost were boosting 
+algorithms, XGBoost, as a more complex algorithm, usually can fully 
+utilize its advantages on large-scale datasets, its complexity and 
+computational overhead fail to bring about significant performance 
+improvement in small datasets, but instead, it may increase the training 
+time and heighten the risk of overfitting [18] . Therefore, the AdaBoost 
+algorithm was selected as the best method to establish the quantitative 
+relationship between the structural characteristics and the cycle 
+remaining capacity on the small datasets. In addition, the 5-fold 
+cross-validation of various algorithms were performed to prove the 
+robustness of the model shown in Fig. S2 and Table S2 . In contrast, 
+10-fold cross-validation of AdaBoost model is slightly better, with both 
+RMSE and MAE on the test set lower than 5-fold cross-validation, and 
+better generalization ability. And the two folds cross-validation of other 
+algorithms also showed the similar results, which is reason that the 
+higher percentage of training data could better capture the features, 
+Table 1 
+Performance evaluation indicators of four models under 10-fold cross validation.
+Model Dat Set R
+2
+RMSE MAE
+Adaboost Training set 0.91 29.8 25.6
+Testing set 0.83 43.5 37.1
+RF Training set 0.86 37.3 26
+Testing set 0.76 51.8 44.1
+XGBoost Training set 0.87 34.2 26.1
+Testing set 0.77 50.9 43.2
+SVR Training set 0.87 41.3 27.2
+Testing set 0.77 44.3 38.3
+Fig. 3. The correlation matrix with the key structural characteristics of Sb@C, 
+initial capacity (IC),and cycle remaining capacity (RC).
+Y. Wang et al.                                                                                                                                                                                                                                   Journal of Alloys and Compounds 1020 (2025) 179424 
+3 
+--- PAGE 4 ---
+while more folds reduce the effect of uneven distribution of test data. 
+Therefore, the different cross-validation methods are highly consistent 
+and the performance of the test set was relatively stable, and it indicated 
+that the model exhibits consistent robustness under different data splits 
+without significant overfitting or underfitting. Therefore, the AdaBoost 
+algorithm with 10-fold cross-validation was selected as the best method 
+to establish the quantitative relationship between the structural char -
+acteristics and the cycle remaining capacity.
+For analyzing the correlation strength between structural charac -
+teristics and cycle remaining capacity of Sb@C composites, the Pearson 
+correlation coefficients (r) between each input feature and cycle 
+remaining capacity were calculated and shown in Fig. 3 , and it could be 
+seen 0.55 of r between AC and RC, which suggested that the AC should 
+be considered to optimize the cycle performance with high capacity, and 
+Pham et.al [19] reported the antimony content was increased from 0.58 
+to 0.64 and the corresponding remaining capacity of cycle performance 
+was increased from 498 mAh/g to 548 mAh/g. In addition, there was a 
+significant correlation between the RP and AS with RC, and the Pearson 
+correlation coefficients were correspond to 0.22 and 0.14, respectively. 
+This suggested that the cycle remaining capacity was comparatively 
+affected by RP and AS. Moreover, the Pearson correlation coefficient of 
+0.72 was obtained and shown a better statistical trend between the 
+initial capacity and the output characteristic of cycle remaining capacity 
+from the calculation, and it was indicated the cycle remaining capacity 
+were greatly affected by the initial capacity. Meanwhile, this was also a 
+significant correlation (r = 0.40) between the IC and AC and it was 
+consistent with the accordingly raised initial capacity with the increase 
+of AC due to the high theoretical capacity of 660 mAh/g for Sb, and 
+these are the main reasons why the IC was added as input feature by 
+CEP.
+To the quantitative analysis of the influence and contribution of the 
+input structural characteristics to the cycle remaining capacity, the 
+particular contribution value of every input feature to the output was 
+calculated with the SHAP method based on the Adaboost model, as 
+shown in Fig. 4 . The average absolute of the SHAP value for every 
+feature were represented the relevance of the major characteristics, and 
+the more relevant the feature was the higher the SHAP value. Fig. 4 a 
+showed the SHAP plots for the AdaBoost model of cycle remaining ca -
+pacity and the effect of a certain feature on the RC, and Fig. 4 b displayed 
+that each sample was affected by each feature of the target variable, with 
+each point representing an independent sample, and blue color indi -
+cated a negative correlation and red color indicated a positive correla -
+tion [20] . It was clear that AC was the most important input feature 
+among all structural features and AC positively correlation affected the 
+RC values in Sb@C composites for sodium-ion storage. These results 
+were consistent with the sodium storage mechanism for the 
+high-capacity of Sb@C electrode, which means the content of antimony 
+directly affects the capacity of Sb@C composites since the theoretical 
+Fig. 4. (a) The SHAP plots of the Adaboost-RC model, (b) The impact of a certain feature on RC, (c) Waterfall plot of predicted cycle remaining capacity, (d) SHAP 
+value of a single feature for Sb content (AC).
+Y. Wang et al.                                                                                                                                                                                                                                   Journal of Alloys and Compounds 1020 (2025) 179424 
+4 
+--- PAGE 5 ---
+capacity of Sb was as high as 660 mAh/g. And the higher capacity for 
+Sb@C electrode was provided with composition of antimony, and the 
+stable structure of carbon material can buffer the volume expansion of 
+Sb to avoid the attenuation of remaining capacity of cycle performance 
+[21] . Meanwhile, the SHAP values of AS and RP showed the negative 
+correlation with RC values, which indicated that the smaller the value of 
+AS and RP, it was probable to be the higher of remaining capacity. The 
+reason might be that the smaller RP possessed a higher degree of 
+graphitization of the carbon material [22] , which had more ordered 
+structure and better conductivity, which contribute to the transport of 
+electrons [23] , in favor of improving the cycle performance and higher 
+remaining capacity for SIBs. Similarly, the smaller-sized antimony par -
+ticles had more specific surface area to provide more active sites in favor 
+of storing sodium-ion and improving the electrochemical reaction ac -
+tivity to enhance the cycle remaining capacity of SIBs [24,25] . In 
+addition, small-sized antimony particles were not prone to significant 
+structural damage due to the easy dissipation of tension, and small-sized 
+particles may be more suitable for maintaining the structural integrity of 
+the material to reduce the capacity decay and improve the cycling 
+remaining capacity of Sb@C electrode [26] . In addition, compared to 
+another structure characteristics for DC, IC and N of Sb@C composites 
+influencing the cycle performance, the change of AC can affect the so -
+dium storage capacity of SIBs more directly, while AS and RP affect the 
+cycling remaining capacity more indirectly through the internal struc -
+ture. Therefore, the AC, AS and RP of structural parameters in Sb@C 
+composites should be obtained more attention on the design of 
+high-performance electrode materials.
+To further analyze the local effects of individual structural parame -
+ters on cycle remaining capacity, the result of the local SHAP interpreter 
+based on the Adaboost model was shown in Fig. 4 c . The E[F(x)] repre -
+sented the average predicted value of the model over all samples, which 
+was equivalent to the model ’ s starting point of 453.70 mAh/g, when the 
+contributions of particular structural characteristics were not taken into 
+account with the cycle remaining capacity. When the structural char -
+acteristic of AC was 0.64, the predicted value of cycle remaining ca -
+pacity was increased 25.89 mAh/g. Meanwhile, the AS for 3.20 nm and 
+RP for 0.75 contributed to the corresponding predicted value for 
++ 23.49 and + 15.9 mAh/g, respectively. Furthermore, 2.29 nm of the 
+DC, nitrogen free and 0.31 nm of IS reduced the predicted values of 6.12, 
+5.94 and 3.06 mAh/g, respectively. The final result of cycle remaining 
+capacity from the predicted model can be obtained as 503.8 mAh/g, 
+which was superimposed the individual feature on this baseline value. 
+Meanwhile, it was discovered that AC was the most important factor in 
+the model ’ s decision-making process. Therefore, the greatest impact of 
+the input feature for AC was chosen to do a single SHAP analysis as 
+displayed in Fig. 4 d , and the degree of contribution for AC was overall 
+increasing trend to the cycle remaining capacity. When the AC was after 
+increased to 0.4,the SHAP value was positive, indicating that this region 
+of the AC has a certain positive contribution to the prediction results. 
+The SHAP value increased steadily with the enhancement of AC, 
+reaching a notably high range between 0.65 and 0.75. This indicates a 
+positive contribution toward achieving the desired cycling remaining 
+capacity.
+To precisely guide the experimental preparation through the pre -
+diction model, the sets of artificially constructed structural data were 
+constructed based on the existing value range of each structure- 
+performance data [27] ( Table S3 ), in which the IC was determined by 
+the approximate change trend between AC with the 4-means clustering 
+method to fit a curve ( Fig. S3 ). And other values of the input feature to 
+be collected in the partition segments. And it was performed ML 
+modeling on the above complete structural property database. Firstly, 
+the original 90 existing data were divided into training sets and test sets 
+in a ratio of 8:2 to input into the model, and the suitable model was 
+established through multiple iterations. Then, the prediction model was 
+obtained from the artificially constructed data, which eliminated un -
+qualified theoretical data and substituted into the above model. The key 
+parameters of structural characteristics for AC, RP and AS were chosen 
+to illustrate the laws of change for obtaining specific structures and 
+properties. The contour maps of the simultaneously effect for predicted 
+remaining capacity with structural parameters of AC and RP as dis -
+played Fig. 5 a , and the predicted values of high remaining capacity were 
+concentrated in the range of RP at lesser than 1.25 and greater than 2.5, 
+the AC in the range from 0.65 to 0.75. It revealed the higher capacity of 
+the Sb@C composite was provided with the moderate amount of AC, due 
+to the high theoretical capacity of Sb, and the lesser of RP had 
+well-ordered structure and better electrical conductivity for the trans -
+port of sodium ions and obtaining the high cycle remaining capacity
+[22] , which was a consistent with the above conclusion of the SHAP 
+values. In addition, another high cycle remaining capacity region of the 
+Sb@C composite was also exhibited, when the Sb@C composite has RP 
+was greater with more defects and disordered structures of carbon ma -
+terial to increase the embedding sites for sodium ions [28 – 30] , which 
+was reasonable explanation that the best cycle remaining capacity can 
+be obtained for Sb@C composite with an interval range of RP. Fig. 5 b 
+demonstrated the collaborative effect of AS and AC on the predicted 
+cycling remaining capacity, where the expected high-value region of 
+sodium storage capacity was concentrated in the range of about 3 nm to 
+25 nm for AS and also closing to 0.65 for AC, which corresponded to the 
+Fig. 5. The contour maps of change trends for predicted remaining capacity with structural parameters of (a)AC and RP, (b) AC and AS.
+Y. Wang et al.                                                                                                                                                                                                                                   Journal of Alloys and Compounds 1020 (2025) 179424 
+5 
+--- PAGE 6 ---
+above analysis of the SHAP. This means the small-sized particle of Sb@C 
+composite was better suited for preserving the structural integrity of the 
+material to increase the cycle remaining capacity, but the larger size of 
+antimony particles was readily triggered with mechanical stress and 
+strain during the charging and discharging process, which causes the 
+particle rupture and the pulverization of the electrode material, rapidly 
+degrading the cycling capacity of sodium-ion battery [26] .
+In order to further verify the generalization ability and accuracy of 
+the built model, the experimental results of other metal-carbon com -
+posites with the similar reaction mechanisms of Sb@C composite were 
+used to validate the model for the cycle remaining capacity. Fig. 6 and 
+Table S4 showed the predicted outcomes and loss rate in the sets of 
+experimental data for the sodium storage property of Germanium- 
+carbon (Ge@C) [31 – 34] , Tin-carbon (Sn@C) [35 – 38] , Bismuth-carbon 
+(Bi@C) [39 – 42] and Iron-carbon (Fe@C) [43 – 46] . The loss rate of the 
+model was computed in the (|Experimental RC-Predicted RC|)/Exper -
+imental RC. It was observed when the experimental cycling capacity of 
+322 mAh/g and predicted capacity of 359.6 mAh/g for the maximum 
+loss rate of 10.47 % in Ge@C material, and other loss rate of was all less 
+than 15 %. And there was a certain difference compared with the Sb@C 
+material, which may be from the different theoretical capacities of other 
+metals, thus affecting the cycling capacity of SIBs. Therefore, the 
+established prediction model of cycle remaining capacity can be trans -
+ferred to other metal composites and has strong generalization ability.
+3. Conclusion and future
+In summary, this work established the prediction model for the high 
+remaining capacity of Sb@C electrode for sodium-ion storage based on 
+the multiple types of ML algorithm, and it was shown that the Adaboost 
+algorithm had the more accurate predictions compared with XGBoost, 
+RF, and SVR, and the corresponding R² of the test set reaches 0.83, with 
+an average absolute error of 37.1. Moreover, the consistent robustness of 
+prediction model was obtained with under different fold cross- 
+validation without significant overfitting or underfitting. Meanwhile, 
+it quantitatively analyzed the relationship between the structural char -
+acteristics of Sb@C composite with the cycle remaining capacity 
+through the established prediction model, and the better cycling ca -
+pacity could be predicted from the range of Raman peak intensity ratio 
+for 0.5 – 1 or 2.5 – 3, antimony size for 3 – 25 nm and antimony content for 
+0.65 – 0.75. In addition, the build model of cycle remaining capacity for 
+Sb@C composite was verified by the method of data migration with the 
+sodium storage properties of other metal@carbon composite, and the 
+error rate of the model is less than 15 %. Our work establishes a database 
+of structural properties of antimony@carbon (Sb@C) composites and 
+analyzes the relationship between structural parameters and sodium 
+storage performance using machine learning. An efficient methodology 
+is proposed, which helps to correlate the material structure with high 
+cycling capacity to design and screen electrode materials for high- 
+performance sodium-ion batteries.
+Meanwhile, in the future, the standardized processing criteria could 
+Fig. 6. The comparison of the experimental data and predicted data for (a) Ge@C, (b) Sn@C, (c)Bi@C and (d) Fe@C.
+Y. Wang et al.                                                                                                                                                                                                                                   Journal of Alloys and Compounds 1020 (2025) 179424 
+6 
+--- PAGE 7 ---
+be defined to develop structure-property database with using big data 
+analysis and multidisciplinary cooperation for the effective design and 
+preparation of high performance electrode material. The proposed 
+process of data processing and modeling are displayed in Fig. 7 . Firstly, 
+the parameters of structural characteristics and energy storage perfor -
+mance for electrode material are obtained from the standardized pro -
+cessing and integrated into the structure-property database. 
+Subsequently, the datasets are utilized to update the ML model from the 
+technological side of the synthesis process and the structural charac -
+terization side for the electrode to directly screen and design high ca -
+pacity materials. Furthermore, the process-property database can also 
+be established with the preparation process of electrode materials, and 
+the ML model can be trained to guide the design of experiments to 
+minimize shortening the study period of high performance electrodes.
+CRediT authorship contribution statement
+Chen LingJiao: Supervision, Funding acquisition, Formal analysis. 
+Huang Di: Writing – review & editing, Visualization, Methodology, 
+Funding acquisition, Conceptualization. Liang Jiaojiao: Writing – re -
+view & editing, Methodology, Funding acquisition, Conceptualization. 
+Wang Yufei: Writing – original draft, Validation, Supervision, Software, 
+Resources, Methodology, Investigation, Funding acquisition, Data 
+curation, Conceptualization. Zhou Haixin: Writing – review & editing, 
+Supervision, Software. Wang Kuo: Supervision, Project administration, 
+Formal analysis. Liu Xin: Supervision, Resources, Investigation. Peng 
+Youming: Supervision, Formal analysis. Wu Xueping: Validation, Su -
+pervision, Conceptualization.
+Declaration of Competing Interest
+All authors from the manuscript entitled as “ Machine learning- 
+assisted structural parameters screening of Sb@C composites for high 
+cycle capacity in sodium-ion battery ” declare that we have no known 
+competing financial interests or personal relationships that could have 
+appeared to influence the work reported in this paper.
+Acknowledgment
+This work is supported by the National Natural Science Foundation 
+of China (No. 62106074), the Natural Science Foundation of Hunan 
+Province (No. 2024JJ5127), the Education Department of Hunan 
+Province (No. 22B0580 and 24A0421) and the Scientific research and 
+innovation Foundation of Hunan University of Technology (No. 
+CX2317).
+Appendix A. Supporting information
+Supplementary data associated with this article can be found in the 
+online version at doi:10.1016/j.jallcom.2025.179424 .
+Data Availability
+Data will be made available on request.
+References
+[1] L. Zhao, T. Zhang, W. Li, T. Li, L. Zhang, X. Zhang, Z. Wang, Engineering of sodium- 
+ion batteries: opportunities and challenges, Engineering 24 (2023) 172 – 183 .
+[2] Q. Xue, S. Li, Y. Zhao, P. Sheng, L. Xu, Z. Li, B. Zhang, H. Li, B. Wang, L. Yang, 
+Y. Cao, Z. Chen, Novel Alkaline Sodium-Ion Battery capacitor based on active 
+carbon||Na
+0.44
+MnO
+2 
+towards low cost, high-rate capability and long-term lifespan, 
+Acta Phys. Chim. Sin. 40 (2024) .
+[3] Z. Hu, Y. Niu, X. Rong, Y. Hu, Suppression of voltage decay through Ni
+3 +
+barrier in 
+anionic-redox active cathode for Na-ion batteries, Acta Phys. Chim. Sin. 40 (2024) .
+[4] N. Zhang, X. Chen, J. Xu, P. He, X. Ding, Hexagonal sb nanocrystals as high- 
+capacity and long-cycle anode materials for sodium-ion batteries, ACS Appl. Mater. 
+Interfaces 15 (2023) 26728 – 26736 .
+[5] T. Perveen, M. Siddiq, N. Shahzad, R. Ihsan, A. Ahmad, M.I. Shahzad, Prospects in 
+anode materials for sodium ion batteries - a review, Renew. Sustain. Energy Rev. 
+119 (2020) .
+[6] C. Mi, Y. Qin, X. Huang, Y. Luo, Z. Zhang, C. Wang, Y. Shi, L. Yin, R. Wang, 
+Galvanic replacement synthesis of graphene coupled amorphous antimony 
+nanoparticles for high-performance sodium-ion capacitor, Acta Phys. Chim. Sin. 40 
+(2024) .
+[7] K.-C. Huang, J.-Z. Guo, H.-H. Li, H.-H. Fan, D.-H. Liu, Y.-P. Zheng, W.-L. Li, X.- 
+L. Wu, J.-P. Zhang, Layer-stacked Sb@graphene micro/nanocomposite with decent 
+Na-storage, full-cell and low-temperature performances, J. Alloy. Compd. 731 
+(2018) 881 – 888 .
+[8] A.-G. Nguyen, H.T.T. Le, R. Verma, D.-L. Vu, C.-J. Park, Boosting sodium-ion 
+battery performance using an antimony nanoparticle self-embedded in a 3D 
+nitrogen-doped carbon framework anode, Chem. Eng. J. 429 (2022) .
+[9] H. Liu, Z. Wang, Z. Wu, S. Zhang, S. Ge, P. Guo, M. Hua, X. Lu, S. Wang, J. Zhang, 
+Direct tuning of meso-/micro-porous structure of carbon nanofibers confining Sb 
+nanocrystals for advanced sodium and potassium storage, J. Alloy. Compd. 833 
+(2020) .
+[10] X. Luo, H. Tan, T. Ma, H. Wang, M. Lv, Z. Yu, C. Fu, X. Chang, S. Jin, Nitrogen 
+doped porous carbon coated antimony as high performance anode material for 
+sodium-ion batteries, Nanotechnol 32 (2021) .
+[11] Z. Ahmed, K. Mohamed, S. Zeeshan, X. Dong, Artificial intelligence with multi- 
+functional machine learning platform development for better healthcare and 
+precision medicine, Database 2020 (2020) .
+[12] X. Liu, T. Wang, T. Ji, H. Wang, H. Liu, J. Li, D. Chao, Using machine learning to 
+screen non-graphite carbon materials based on Na-ion storage properties, J. Mater. 
+Chem. A 10 (2022) 8031 – 8046 .
+[13] I.A. Moses, R.P. Joshi, B. Ozdemir, N. Kumar, J. Eickholt, V. Barone, Machine 
+learning screening of metal-ion battery electrode materials, ACS Appl. Mater. 
+Interfaces 13 (2021) 53355 – 53362 .
+Fig. 7. The proposed process for the prediction of battery performance in the future base on ML.
+Y. Wang et al.                                                                                                                                                                                                                                   Journal of Alloys and Compounds 1020 (2025) 179424 
+7 
+--- PAGE 8 ---
+[14] D. Huang K. Wang Z. Li H. Zhou X. Zhao X. Peng J. Wu J. Liang J. Meng L. Zhao A 
+machine learning prediction model for quantitative analyzing the influence of non- 
+radiative voltage loss on non-fullerene organic solar cells Chem Eng J 475 145958.
+[15] K. Wang, J. Liang, Z. Li, H. Zhou, C. Nie, J. Deng, X. Zhao, X. Peng, Z. Chen, 
+Z. Peng, D. Huang, H.S. Jang, J. Kong, Y. Zou, Design of experiments with the 
+support of machine learning for process parameter optimization of all-small- 
+molecule organic solar cells, FlexMat 1 (3) (2024) 234–247 .
+[16] S. Sarkar, S.C. Peter, An overview on Sb-based intermetallics and alloys for sodium- 
+ion batteries: trends, challenges and future prospects from material synthesis to 
+battery performance, J. Mater. Chem. A 9 (2021) 5164–5196 .
+[17] B. Dou, Z. Zhu, E. Merkurjev, L. Ke, L. Chen, J. Jiang, Y. Zhu, J. Liu, B. Zhang, G. 
+W. Wei, Machine learning methods for small data challenges in molecular science, 
+Chem. Rev. 123 (2023) 8736–8780 .
+[18] Y. Cao, Q.-G. Miao, J.-C. Liu, L. Gao, Advance and prospects of adaboost algorithm, 
+Acta Autom. Sin. 39 (2013) 745–758 .
+[19] X.M. Pham, D.T. Ngo, H.T.T. Le, P.N. Didwal, R. Verma, C.W. Min, C.N. Park, C. 
+J. Park, A self-encapsulated porous Sb-C nanocomposite anode with excellent Na- 
+ion storage performance, Nanoscale 10 (2018) 19399–19408 .
+[20] A.B. Parsa, A. Movahedi, H. Taghipour, S. Derrible, A.K. Mohammadian, Toward 
+safer highways, application of XGBoost and SHAP for real-time accident detection 
+and feature analysis, Accid. Anal. Prev. 136 (2020) 105405 .
+[21] Y. Xiang, X. Hu, X. Zhong, W. Deng, G. Zou, H. Hou, X. Ji, Mechanism of fast 
+storage of Li/Na in complex Sb-based hybrid system, Adv. Funct. Mater. 34 (2023) .
+[22] L. Dashairya, D. Das, P. Saha, Electrophoretic deposition of antimony/reduced 
+graphite oxide hybrid nanostructure: a stable anode for lithium-ion batteries, 
+Mater. Today Commun. 24 (2020) .
+[23] Y. Shen, Carbothermal synthesis of metal-functionalized nanostructures for energy 
+and environmental applications, J. Mater. Chem. A 3 (2015) 13114–13188 .
+[24] B. Chen, M. Liang, Q. Wu, S. Zhu, N. Zhao, C. He, Recent developments of 
+antimony-based anodes for sodium- and potassium-ion batteries, Trans. Tianjin 
+Univ. 28 (2021) 6–32 .
+[25] A. Amardeep, R.C. Shende, P. Gandharapu, M.S. Wani, A. Mukhopadhyay, Faceted 
+antimony particles with interiors reinforced with reduced graphene oxide as high- 
+performance anode material for sodium-ion batteries, ACS Appl. Mater. Interfaces 
+14 (2022) 45296–45307 .
+[26] Z. Liu, Y. Jiang, Q. Hu, S. Guo, L. Yu, Q. Li, Q. Liu, X. Hu, Safer lithium-ion batteries 
+from the separator aspect: development and future perspectives, Energy Environ. 
+Mater. 4 (2020) 336–362 .
+[27] H. Gao, X. Guo, S. Wang, F. Zhang, H. Liu, G. Wang, Antimony-based 
+nanomaterials for high-performance potassium-ion batteries, EcoMat 2 (2020) .
+[28] I. Childres, L.A. Jauregui, W. Park, H. Cao, Y.P. Chen, Raman spectroscopy of 
+graphene and related materials, N. Dev. Photon Mater. Res. 1 (2013) 1–20 .
+[29] A. Eckmann, A. Felten, A. Mishchenko, L. Britnell, R. Krupke, K.S. Novoselov, 
+C. Casiraghi, Probing the nature of defects in graphene by Raman spectroscopy, 
+Nano Lett. 12 (2012) 3925–3930 .
+[30] E. Pollak, G. Salitra, V. Baranchugov, In situ conductivity, impedance spectroscopy, 
+and ex situ Raman spectra of amorphous silicon during the insertion/extraction of 
+lithium, J. Phys. Chem. C. 111 (2007) 11437–11444 .
+[31] C. Liu, Y. Jiang, C. Meng, X. Liu, B. Li, S. Xia, Amorphous germanium 
+nanomaterials as high-performance anode for lithium and sodium-ion batteries, 
+Adv. Mater. Technol. 8 (2023) .
+[32] Q. Li, Z. Zhang, S. Dong, C. Li, X. Ge, Z. Li, J. Ma, L. Yin, Ge nanoparticles 
+encapsulated in interconnected hollow carbon boxes as anodes for sodium ion and 
+lithium ion batteries with enhanced electrochemical performance, Part. Part. Syst. 
+Char. 34 (2017) .
+[33] N. Wen, S. Chen, J. Feng, K. Zhang, Z. Zhou, X. Li, Q. Fan, Q. Kuang, Y. Dong, 
+Y. Zhao, In situ hydrothermal synthesis of double-carbon enhanced novel cobalt 
+germanium hydroxide composites as promising anode material for sodium ion 
+batteries, Dalton Trans. 50 (2021) 4288–4299 .
+[34] M. Yanilmaz, G. Cihanbeyoglu, J. Kim, Centrifugally spun binder-free N, S-Doped 
+Ge@PCNF anodes for Li-ion and Na-ion batteries, ACS Omega 8 (2023) 
+16987–16995 .
+[35] Z. Liu, J. Li, J. Yang, Preparation of a novel gC
+3 
+N
+4
+/Sn/N-doped carbon composite 
+for sodium storage, Chem. J. Chin. Univ. (2021) .
+[36] L. Luo, H. Qiao, W. Xu, D. Li, J. Zhu, C. Chen, Y. Lu, P. Zhu, X. Zhang, Q. Wei, Tin 
+nanoparticles embedded in ordered mesoporous carbon as high-performance anode 
+for sodium-ion batteries, J. Solid State Electrochem. 21 (2017) 1385–1395 .
+[37] H. Ying, S. Zhang, Z. Meng, Z. Sun, W.-Q. Han, Ultrasmall Sn nanodots embedded 
+inside N-doped carbon microcages as high-performance lithium and sodium ion 
+battery anodes, J. Mater. Chem. A 5 (2017) 8334–8342 .
+[38] Y. Li, C. Ou, J. Zhu, Z. Liu, J. Yu, W. Li, H. Zhang, Q. Zhang, Z. Guo, Ultrahigh and 
+durable volumetric lithium/sodium storage enabled by a highly dense graphene- 
+encapsulated nitrogen-doped carbon@Sn compact monolith, Nano Lett. 20 (2020) 
+2034–2046 .
+[39] H. Kim, D. Kim, Y. Lee, D. Byun, H.-S. Kim, W. Choi, Synthesis of Bi2S3/C yolk- 
+shell composite based on sulfur impregnation for efficient sodium storage, Chem. 
+Eng. J. 383 (2020) .
+[40] Y. Li, X. Zhong, X. Wu, M. Li, W. Zhang, D. Wang, Bi/C nanosheet microspheres 
+with an open pore structure as anodes for sodium ion batteries with high capacity, 
+excellent rate performance and long cycle life, J. Mater. Chem. A 9 (2021) 
+22364–22372 .
+[41] J. Zhu, J. Wang, G. Li, L. Huang, M. Cao, Y. Wu, Heterogeneous structured 
+pomegranate-like Bi@C nanospheres for high-performance sodium storage, 
+J. Mater. Chem. A 8 (2020) 25746–25755 .
+[42] J. Xiang, Z. Liu, T. Song, Bi@C nanoplates derived from (BiO)
+2
+CO
+3 
+as an enhanced 
+electrode material for Lithium/Sodium-Ion batteries, ChemistrySelect 3 (2018) 
+8973–8979 .
+[43] L. Yin, Y. Pan, M. Li, Y. Zhao, S. Luo, Facile and scalable synthesis of α -Fe
+2
+O
+3
+/ 
+γ-Fe
+2
+O
+3
+/Fe/C nanocomposite as advanced anode materials for lithium/sodium ion 
+batteries, Nanotechnol 31 (2020) .
+[44] H. Qi, C. Zhao, J. Huang, C. He, L. Tang, W. Deng, Metastable FeCN
+2
+@nitrogen- 
+doped carbon with high pseudocapacitance as an anode material for sodium ion 
+batteries, Nanoscale 14 (2022) 780–789 .
+[45] S. Zhang, J. Mi, H. Zhao, W. Ma, L. Dang, L. Yue, Electrospun N-doped carbon 
+nanofibers confined Fe
+1
+-xS composite as superior anode material for sodium-ion 
+battery, J. Alloy. Compd. 842 (2020) .
+[46] Y. Liu, L. Zhang, D. Liu, W. Hu, X. Yan, C. Yu, H. Zeng, T. Shen, Turbostratic 
+carbon-localised FeS
+2 
+nanocrystals as anodes for high-performance sodium-ion 
+batteries, Nanoscale 11 (2019) 15497–15507 .
+Y. Wang et al.                                                                                                                                                                                                                                   Journal of Alloys and Compounds 1020 (2025) 179424 
+8 
